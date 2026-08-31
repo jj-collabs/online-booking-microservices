@@ -1,0 +1,36 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: resource-service
+  datasource:
+    url: jdbc:postgresql://resource-db:5432/resourcedb
+    username: resource_service
+    password: resource_service_pw
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.booking: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

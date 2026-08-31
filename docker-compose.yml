@@ -1,0 +1,118 @@
+version: "3.9"
+
+services:
+
+  # ---------- Service Registry ----------
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - booking-net
+
+  # ---------- API Gateway ----------
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - booking-net
+
+  # ---------- User Service + its own DB ----------
+  user-db:
+    image: postgres:16-alpine
+    container_name: user-db
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: user_service
+      POSTGRES_PASSWORD: user_service_pw
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - booking-net
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      user-db:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    networks:
+      - booking-net
+
+  # ---------- Resource Service + its own DB ----------
+  resource-db:
+    image: postgres:16-alpine
+    container_name: resource-db
+    environment:
+      POSTGRES_DB: resourcedb
+      POSTGRES_USER: resource_service
+      POSTGRES_PASSWORD: resource_service_pw
+    volumes:
+      - resource-db-data:/var/lib/postgresql/data
+    networks:
+      - booking-net
+
+  resource-service:
+    build: ./resource-service
+    container_name: resource-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      resource-db:
+        condition: service_started
+    ports:
+      - "8082:8082"
+    networks:
+      - booking-net
+
+  # ---------- Booking Service + its own DB ----------
+  booking-db:
+    image: postgres:16-alpine
+    container_name: booking-db
+    environment:
+      POSTGRES_DB: bookingdb
+      POSTGRES_USER: booking_service
+      POSTGRES_PASSWORD: booking_service_pw
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - booking-net
+
+  booking-service:
+    build: ./booking-service
+    container_name: booking-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      resource-service:
+        condition: service_started
+      booking-db:
+        condition: service_started
+    ports:
+      - "8083:8083"
+    networks:
+      - booking-net
+
+networks:
+  booking-net:
+    driver: bridge
+
+volumes:
+  user-db-data:
+  resource-db-data:
+  booking-db-data:
