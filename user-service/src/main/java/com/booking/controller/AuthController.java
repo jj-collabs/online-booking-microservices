@@ -47,7 +47,7 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
         return userRepository.findByEmail(req.email())
                 .filter(u -> passwordEncoder.matches(req.password(), u.getPassword()))
-                .map(u -> {
+                .<ResponseEntity<?>>map(u -> {
                     String token = jwtService.generateToken(u.getEmail(), u.getRole());
                     log.info("event=login_success email={} userId={}", u.getEmail(), u.getId());
                     return ResponseEntity.ok(new AuthResponse(token, u.getEmail(), u.getRole()));
