@@ -6,6 +6,7 @@ ITRI623 Project 2026 — Phase 1
 
 | Service | Port | Owns | Purpose |
 |---|---|---|---|
+| Frontend | 3000 | — | Browser client — sign in, browse resources, create/cancel bookings |
 | Eureka Server | 8761 | — | Service registry / discovery |
 | API Gateway | 8090 (host) → 8080 (container) | — | Single entry point, routing, JWT validation, request logging |
 | User Service | 8081 | `userdb` | Registration, login, JWT issuance |
@@ -32,15 +33,18 @@ service ports are exposed too, for debugging and demonstrating service discovery
 ## Running locally
 
 ```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
-This starts: Eureka, API Gateway, all 3 domain services, and one Postgres container per service.
+This starts: the frontend, Eureka, API Gateway, all 3 domain services, and one Postgres container per service.
+
+Open **http://localhost:3000** — register an account, sign in, add a resource, and book
+it, all from the browser. This is the easiest way to demonstrate the full workflow.
 
 Check registration: open `http://localhost:8761` — you should see `API-GATEWAY`,
 `USER-SERVICE`, `RESOURCE-SERVICE`, and `BOOKING-SERVICE` registered.
 
-## Demo workflow (matches spec section 14)
+## Demo workflow via curl (alternative to the browser UI)
 
 ```bash
 # 1. Register a user

@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -39,6 +40,13 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
+
+        // Browsers send an OPTIONS preflight before real cross-origin requests, without
+        // an Authorization header. Let it through so Spring Cloud Gateway's CORS handling
+        // can respond to it; the actual request that follows is still validated below.
+        if (request.getMethod() == HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
 
         if (OPEN_PATHS.stream().anyMatch(path::startsWith)) {
             return chain.filter(exchange);

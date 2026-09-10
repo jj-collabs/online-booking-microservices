@@ -50,7 +50,7 @@ public class AuthController {
                 .<ResponseEntity<?>>map(u -> {
                     String token = jwtService.generateToken(u.getEmail(), u.getRole());
                     log.info("event=login_success email={} userId={}", u.getEmail(), u.getId());
-                    return ResponseEntity.ok(new AuthResponse(token, u.getEmail(), u.getRole()));
+                    return ResponseEntity.ok(new AuthResponse(token, u.getId(), u.getEmail(), u.getRole()));
                 })
                 .orElseGet(() -> {
                     log.warn("event=login_failed reason=bad_credentials email={}", req.email());

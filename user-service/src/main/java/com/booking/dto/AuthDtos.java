@@ -19,6 +19,7 @@ public class AuthDtos {
 
     public record AuthResponse(
             String token,
+            Long userId,
             String email,
             String role
     ) {}

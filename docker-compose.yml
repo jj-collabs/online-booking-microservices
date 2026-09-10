@@ -2,6 +2,17 @@ version: "3.9"
 
 services:
 
+  # ---------- Frontend ----------
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - booking-net
+
   # ---------- Service Registry ----------
   eureka-server:
     build: ./eureka-server

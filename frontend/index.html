@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Booking Desk</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◧</span>
+      <span class="brand-name">BOOKING DESK</span>
+    </div>
+    <div class="topbar-right">
+      <span id="clock" class="clock">--:--:--</span>
+      <div id="userBadge" class="user-badge hidden">
+        <span id="userEmail"></span>
+        <button id="logoutBtn" class="link-btn">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Auth -->
+    <section id="authSection" class="board board-narrow">
+      <div class="board-head">
+        <h1>Sign in to continue</h1>
+        <p class="board-sub">New here? Register below — takes a second.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-tab="login">Sign in</button>
+        <button class="tab-btn" data-tab="register">Register</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label>Email
+          <input type="email" name="email" required placeholder="you@example.com" />
+        </label>
+        <label>Password
+          <input type="password" name="password" required placeholder="••••••••" />
+        </label>
+        <button type="submit" class="btn-primary">Sign in</button>
+        <p class="form-msg" id="loginMsg"></p>
+      </form>
+
+      <form id="registerForm" class="auth-form hidden">
+        <label>Full name
+          <input type="text" name="fullName" required placeholder="Dr Smith" />
+        </label>
+        <label>Email
+          <input type="email" name="email" required placeholder="you@example.com" />
+        </label>
+        <label>Password
+          <input type="password" name="password" required minlength="8" placeholder="At least 8 characters" />
+        </label>
+        <button type="submit" class="btn-primary">Create account</button>
+        <p class="form-msg" id="registerMsg"></p>
+      </form>
+    </section>
+
+    <!-- App (shown once signed in) -->
+    <section id="appSection" class="hidden">
+
+      <section class="board">
+        <div class="board-head">
+          <h2>Available resources</h2>
+          <button id="newResourceBtn" class="btn-ghost">+ Add resource</button>
+        </div>
+
+        <form id="resourceForm" class="inline-form hidden">
+          <input type="text" name="name" placeholder="Name (e.g. Meeting Room A)" required />
+          <input type="text" name="type" placeholder="Type (ROOM / EQUIPMENT)" required />
+          <input type="text" name="location" placeholder="Location" required />
+          <input type="number" name="capacity" placeholder="Capacity" min="1" required />
+          <button type="submit" class="btn-primary btn-sm">Save</button>
+        </form>
+
+        <div class="board-rows" id="resourceRows">
+          <p class="empty">Loading resources…</p>
+        </div>
+      </section>
+
+      <section class="board">
+        <div class="board-head">
+          <h2>Your bookings</h2>
+        </div>
+        <div class="board-rows" id="bookingRows">
+          <p class="empty">Loading your bookings…</p>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
